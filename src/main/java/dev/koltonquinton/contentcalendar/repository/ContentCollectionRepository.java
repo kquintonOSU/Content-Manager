@@ -35,7 +35,7 @@ public class ContentCollectionRepository {
 
     @PostConstruct
     private void init() {
-        Content content = new Content(1, "First post", "Frist Post", Status.IDEA, Type.ARTICLE, LocalDateTime.now(), null, "");
+        Content content = new Content(1, "First post", "First Post", Status.IDEA, Type.ARTICLE, LocalDateTime.now(), null, "");
 
         contentList.add(content);
     }
