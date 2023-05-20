@@ -1,20 +1,22 @@
 package dev.koltonquinton.contentcalendar.controller;
 
 import dev.koltonquinton.contentcalendar.model.Content;
-import dev.koltonquinton.contentcalendar.repository.ContentCollectionRepository;
+import dev.koltonquinton.contentcalendar.repository.ContentRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/content")
+@CrossOrigin
 public class ContentController {
-    private final ContentCollectionRepository repository;
+    private final ContentRepository repository;
 
-    public ContentController(ContentCollectionRepository repository) {
+    public ContentController(ContentRepository repository) {
         this.repository = repository;
     }
 
@@ -24,8 +26,9 @@ public class ContentController {
     }
 
     @GetMapping("/{id}")
-    public Content findById(@PathVariable Integer id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Content not found!"));
+    public Optional<Content> findById(@PathVariable Integer id) {
+        return Optional.ofNullable(repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.")));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,6 +49,12 @@ public class ContentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
-        repository.delete(id);
+        repository.deleteById(id);
+    }
+
+    @GetMapping("/filter/type/{type}")
+    public List<Content> filterByType(@PathVariable String type) {
+        return repository.findAllByContentType(type.toUpperCase());
     }
 }
+
